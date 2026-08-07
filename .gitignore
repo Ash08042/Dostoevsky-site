@@ -1,0 +1,14 @@
+# Dependencies and build output
+node_modules/
+.next/
+out/
+
+# Local environment values and logs
+.env.local
+.env*.local
+*.log
+
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+.vscode/*.local.json
