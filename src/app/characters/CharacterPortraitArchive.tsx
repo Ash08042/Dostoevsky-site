@@ -11,7 +11,7 @@ import {
   getCharacterRelations,
   getSupportingCharacter,
 } from "./character-profile-data";
-import TurnstileWidget from "./TurnstileWidget";
+import TurnstileWidget, { type TurnstileWidgetHandle } from "./TurnstileWidget";
 
 type CharacterPortraitArchiveProps = {
   initialCharacterId?: string;
@@ -391,8 +391,7 @@ export default function CharacterPortraitArchive({
   const [commentsLoading, setCommentsLoading] = useState(true);
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState("");
-  const [captchaReset, setCaptchaReset] = useState(0);
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
   const threadSlug = `character:${activeCharacter.id}`;
 
   useEffect(() => {
@@ -426,8 +425,7 @@ export default function CharacterPortraitArchive({
     setDraft("");
     setSelectedCharacterSlug("");
     setSubmitMessage("");
-    setTurnstileToken("");
-    setCaptchaReset((value) => value + 1);
+    turnstileRef.current?.reset();
 
     return () => {
       disposed = true;
@@ -438,11 +436,14 @@ export default function CharacterPortraitArchive({
   async function submitComment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const content = draft.trim();
-    if (!content || !turnstileToken || submitting) return;
+    if (!content || submitting) return;
 
     setSubmitting(true);
     setSubmitMessage("");
     try {
+      const turnstileToken = await turnstileRef.current?.execute();
+      if (!turnstileToken) throw new Error("评论验证暂时不可用，请稍后再试。");
+
       const response = await fetch("/api/comments", {
         body: JSON.stringify({
           characterSlug: selectedCharacterSlug || null,
@@ -466,8 +467,7 @@ export default function CharacterPortraitArchive({
     } catch (error) {
       setSubmitMessage(error instanceof Error ? error.message : "评论提交失败，请稍后再试。");
     } finally {
-      setTurnstileToken("");
-      setCaptchaReset((value) => value + 1);
+      turnstileRef.current?.reset();
       setSubmitting(false);
     }
   }
@@ -620,13 +620,12 @@ export default function CharacterPortraitArchive({
                       {draft.length} / 400
                     </span>
                     <TurnstileWidget
-                      onToken={setTurnstileToken}
-                      resetSignal={captchaReset}
+                      ref={turnstileRef}
                       siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""}
                     />
                     <button
                       className="min-h-11 border border-paper/25 px-5 text-[10px] tracking-[0.14em] text-paper/70 transition hover:border-paper/50 hover:text-paper disabled:cursor-not-allowed disabled:opacity-30"
-                      disabled={!draft.trim() || !turnstileToken || submitting}
+                      disabled={!draft.trim() || submitting}
                       type="submit"
                     >
                       {submitting ? "发送中" : "发送"}

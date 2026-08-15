@@ -26,14 +26,26 @@ export async function verifyCommentTurnstile(token: string) {
 
   const result = (await response.json()) as TurnstileVerification;
   const expectedHostname = process.env.TURNSTILE_EXPECTED_HOSTNAME?.trim();
-  const isLocalTestResult =
-    process.env.NODE_ENV !== "production" && result.metadata?.result_with_testing_key === true;
+  const isOfficialLocalTest =
+    process.env.NODE_ENV !== "production" && secret === "1x0000000000000000000000000000000AA";
 
-  if (isLocalTestResult) return result.success === true;
+  const accepted = isOfficialLocalTest
+    ? Boolean(result.success && (!expectedHostname || result.hostname === expectedHostname))
+    : Boolean(
+        result.success &&
+        result.action === "comment" &&
+        (!expectedHostname || result.hostname === expectedHostname),
+      );
 
-  return Boolean(
-    result.success &&
-    result.action === "comment" &&
-    (!expectedHostname || result.hostname === expectedHostname),
-  );
+  if (!accepted && process.env.NODE_ENV !== "production") {
+    console.warn("[turnstile] Siteverify rejected a comment token", {
+      action: result.action,
+      errorCodes: result["error-codes"] ?? [],
+      hostname: result.hostname,
+      success: result.success,
+      testingKey: isOfficialLocalTest || result.metadata?.result_with_testing_key === true,
+    });
+  }
+
+  return accepted;
 }
