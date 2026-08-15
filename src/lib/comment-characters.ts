@@ -1,0 +1,43 @@
+// 评论角色沿用人物群像的展示顺序：先按作品知名度，再按同一作品内人物受欢迎程度。
+export const commentCharacterIds = [
+  "raskolnikov",
+  "sonya",
+  "svidrigailov",
+  "dunya",
+  "alyosha-karamazov",
+  "ivan-karamazov",
+  "dmitri-karamazov",
+  "grushenka",
+  "smerdyakov",
+  "myshkin",
+  "nastassya",
+  "rogozhin",
+  "aglaya",
+  "underground-man",
+  "liza-underground",
+  "stavrogin",
+  "kirillov",
+  "shatov",
+  "pyotr-verkhovensky",
+  "dreamer",
+  "nastenka",
+  "alexei-gambler",
+  "polina",
+  "antonida",
+  "devushkin",
+  "varvara",
+  "goryanchikov",
+  "akim-akimych",
+  "arkady",
+  "versilov",
+  "katerina-adolescent",
+  "natasha",
+  "nelly",
+  "ivan-petrovich",
+  "netochka",
+  "yefimov",
+] as const;
+
+export type CommentCharacterId = (typeof commentCharacterIds)[number];
+
+export const commentCharacterIdSet = new Set<string>(commentCharacterIds);

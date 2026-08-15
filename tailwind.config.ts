@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  content: ["./app/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
+  content: ["./src/app/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -11,8 +11,43 @@ const config: Config = {
         line: "#3a3a37",
       },
       fontFamily: {
-        display: ["Baskerville", "Iowan Old Style", "Georgia", "serif"],
-        body: ["Noto Serif SC", "Songti SC", "SimSun", "Georgia", "serif"],
+        display: [
+          "Iowan Old Style",
+          "Baskerville",
+          "Songti SC",
+          "STSong",
+          "Noto Serif SC",
+          "Georgia",
+          "serif",
+        ],
+        body: [
+          "Noto Serif SC",
+          "Source Han Serif SC",
+          "Songti SC",
+          "STSong",
+          "SimSun",
+          "Georgia",
+          "serif",
+        ],
+        sans: [
+          "Avenir Next",
+          "Helvetica Neue",
+          "PingFang SC",
+          "Hiragino Sans GB",
+          "Microsoft YaHei",
+          "Arial",
+          "sans-serif",
+        ],
+        archive: [
+          "Avenir Next",
+          "Helvetica Neue",
+          "PingFang SC",
+          "Hiragino Sans GB",
+          "Microsoft YaHei",
+          "Arial",
+          "sans-serif",
+        ],
+        jinghua: ["Jinghua Laosong", "京華老宋体", "京华老宋体", "Songti SC", "SimSun", "serif"],
       },
       letterSpacing: { museum: "0.18em" },
     },

@@ -2,11 +2,19 @@
 node_modules/
 .next/
 out/
+coverage/
+.turbo/
+.cache/
+*.tsbuildinfo
 
 # Local environment values and logs
+.env
 .env.local
 .env*.local
 *.log
+
+# Local deployment state
+.vercel/
 
 # Operating system and editor files
 .DS_Store
